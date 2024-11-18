@@ -9,8 +9,9 @@ lastKeyDown := ""
 ; ComboKey를 눌렀을 때
 e::
 {
+  MsgBox("TEST")
   ; lastKeyDown := "e"  ; 마지막 눌린 키를 기록
-  MsgBox(lastKeyDown)
+  ; MsgBox(lastKeyDown)
   ; return
 }
 
