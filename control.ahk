@@ -13,7 +13,7 @@ Accelerate(velocity, pos, neg) {
     return 0
   } else if (pos + neg == 0) { ; smooth deceleration :)
     return velocity * 0.666
-  } else { ; physicszzzzz
+  } else { ; physics
     return velocity * RESISTANCE + FORCE * (pos + neg)
   }
 }
