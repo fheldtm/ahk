@@ -1,12 +1,10 @@
-#Requires AutoHotkey v2.0
-
 ^!r:: { ; Ctrl+Alt+R
   MsgBox("Reload")
   Reload
 }
 
 EnvVar := 'AHK_MOUSE_MODE'
-CurrentEnvVar := EnvGet(EnvVar)
+CurrentEnvVar := EnvGet, EnvVar
 
 global MOUSE_MODE := false
 
@@ -19,9 +17,9 @@ global VELOCITY_Y := 0
 Accelerate(velocity, pos, neg) {
   if (pos == 0 && neg == 0) {
     return 0
-  } else if (pos + neg == 0) { ; smooth deceleration :)
+  } else if (pos + neg == 0) {
     return velocity * 0.666
-  } else { ; physics
+  } else {
     return velocity * RESISTANCE + FORCE * (pos + neg)
   }
 }
@@ -54,7 +52,8 @@ closeOverlay() {
 
 ; Mouse Mode
 MsgBox(CurrentEnvVar)
-if (CurrentEnvVar == 1) {
+if (CurrentEnvVar == 0)
+{
   openOverlay("Mouse")
 
   loop {
@@ -101,11 +100,6 @@ if (CurrentEnvVar == 1) {
   u:: Send "{WheelUp}"
 } else {
   openOverlay("Insert")
-
-  i:: MsgBox('iiii')
-  o:: MouseClick('Right')
-  d:: Send "{WheelDown}"
-  u:: Send "{WheelUp}"
 }
 
 EnterMouseMode() {

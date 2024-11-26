@@ -38,10 +38,10 @@ MoveCursor() {
     UP := UP - KLevel
     RIGHT := RIGHT + LLevel
 
-    ; VELOCITY_X := Accelerate(VELOCITY_X, LEFT, RIGHT)
-    ; VELOCITY_Y := Accelerate(VELOCITY_Y, UP, DOWN)
+    VELOCITY_X := Accelerate(VELOCITY_X, LEFT, RIGHT)
+    VELOCITY_Y := Accelerate(VELOCITY_Y, UP, DOWN)
 
-    ; MouseMove(VELOCITY_X, VELOCITY_Y, 0, "R")
+    MouseMove(VELOCITY_X, VELOCITY_Y, 0, "R")
 
     ; ToolTip('MouseMode')
     ToolTip(
@@ -94,8 +94,8 @@ EnterInsertMode() {
   ToolTip('')
 }
 
-<^<!n:: EnterNormalMode()
-<^<!i:: EnterInsertMode()
+^!n:: EnterNormalMode()
+^!i:: EnterInsertMode()
 
 #HotIf (MOUSE_MODE)
 {
