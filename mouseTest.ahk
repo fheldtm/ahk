@@ -6,16 +6,13 @@
 }
 
 EnvVar := 'AHK_MOUSE_MODE'
-CurrentEnvVar := EnvGet, EnvVar
+CurrentEnvVar := EnvGet(EnvVar)
 
 global MOUSE_MODE := false
-
 global FORCE := 1.8
 global RESISTANCE := 0.982
-
 global VELOCITY_X := 0
 global VELOCITY_Y := 0
-
 Accelerate(velocity, pos, neg) {
   if (pos == 0 && neg == 0) {
     return 0
@@ -25,7 +22,6 @@ Accelerate(velocity, pos, neg) {
     return velocity * RESISTANCE + FORCE * (pos + neg)
   }
 }
-
 global g := Gui("+AlwaysOnTop -Caption -DPIScale +ToolWindow")
 openOverlay(msg) {
   global g
@@ -45,19 +41,15 @@ openOverlay(msg) {
 
   SetTimer(closeOverlay, -1000)
 }
-
 closeOverlay() {
   global g
 
   g.Destroy()
 }
-
 ; Mouse Mode
 MsgBox(CurrentEnvVar)
-if (CurrentEnvVar == 0)
-{
+if (CurrentEnvVar == 0) {
   openOverlay("Mouse")
-
   loop {
     global VELOCITY_X
     global VELOCITY_Y
@@ -91,7 +83,6 @@ if (CurrentEnvVar == 0)
       ", L: " LLevel
     )
   }
-
   h:: return
   j:: return
   k:: return
@@ -103,16 +94,13 @@ if (CurrentEnvVar == 0)
 } else {
   openOverlay("Insert")
 }
-
 EnterMouseMode() {
   EnvSet(EnvVar, 1)
   Reload
 }
-
 EnterInsertMode() {
   EnvSet(EnvVar, 0)
   Reload
 }
-
 ^!n:: EnterMouseMode()
 ^!i:: EnterInsertMode()
