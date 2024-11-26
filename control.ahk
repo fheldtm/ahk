@@ -29,10 +29,14 @@ MoveCursor() {
   LEFT := 0
 
   if (MOUSE_MODE) {
-    LEFT := LEFT - GetKeyState("h", "P")
-    DOWN := DOWN + GetKeyState("j", "P")
-    UP := UP - GetKeyState("k", "P")
-    RIGHT := RIGHT + GetKeyState("l", "P")
+    HLevel := KeyWait('h', 'D T0')
+    JLevel := KeyWait('j', 'D T0')
+    KLevel := KeyWait('k', 'D T0')
+    LLevel := KeyWait('l', 'D T0')
+    LEFT := LEFT - HLevel
+    DOWN := DOWN + JLevel
+    UP := UP - KLevel
+    RIGHT := RIGHT + LLevel
 
     VELOCITY_X := Accelerate(VELOCITY_X, LEFT, RIGHT)
     VELOCITY_Y := Accelerate(VELOCITY_Y, UP, DOWN)
@@ -84,8 +88,8 @@ EnterInsertMode() {
   ToolTip('')
 }
 
-<#<!n:: EnterNormalMode()
-<#<!i:: EnterInsertMode()
+<^<!n:: EnterNormalMode()
+<^<!i:: EnterInsertMode()
 
 #HotIf (MOUSE_MODE)
 {
