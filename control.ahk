@@ -1,59 +1,15 @@
 #Requires AutoHotkey v2.0
 
-global MOUSE_MODE := false
+#SuspendExempt
+^!n:: EnterNormalMode()
+^!i:: EnterInsertMode()
+#SuspendExempt false
 
-global FORCE := 1.8
-global RESISTANCE := 0.982
-
-global VELOCITY_X := 0
-global VELOCITY_Y := 0
-
-Accelerate(velocity, pos, neg) {
-  if (pos == 0 && neg == 0) {
-    return 0
-  } else if (pos + neg == 0) { ; smooth deceleration :)
-    return velocity * 0.666
-  } else { ; physics
-    return velocity * RESISTANCE + FORCE * (pos + neg)
-  }
-}
-
-MoveCursor() {
-  global VELOCITY_X
-  global VELOCITY_Y
-  global MOUSE_MODE
-
-  UP := 0
-  RIGHT := 0
-  DOWN := 0
-  LEFT := 0
-
-  if (MOUSE_MODE) {
-    HLevel := KeyWait('h', 'D T0')
-    JLevel := KeyWait('j', 'D T0')
-    KLevel := KeyWait('k', 'D T0')
-    LLevel := KeyWait('l', 'D T0')
-    LEFT := LEFT - HLevel
-    DOWN := DOWN + JLevel
-    UP := UP - KLevel
-    RIGHT := RIGHT + LLevel
-
-    VELOCITY_X := Accelerate(VELOCITY_X, LEFT, RIGHT)
-    VELOCITY_Y := Accelerate(VELOCITY_Y, UP, DOWN)
-
-    MouseMove(VELOCITY_X, VELOCITY_Y, 0, "R")
-
-    ; ToolTip('MouseMode')
-    ToolTip(
-      "H: " HLevel
-      ", J: " JLevel
-      ", K: " KLevel
-      ", L: " LLevel
-    )
-  }
-}
+global DEFAULT_MOUSE_SPEED := 5
 
 global g := Gui("+AlwaysOnTop -Caption -DPIScale +ToolWindow")
+global IS_MOUSE_DOWN := false
+
 openOverlay(msg) {
   global g
 
@@ -80,33 +36,94 @@ closeOverlay() {
 }
 
 EnterNormalMode() {
-  global MOUSE_MODE
-  MOUSE_MODE := true
-
   openOverlay("Normal")
+  Suspend(0)
+  Pause(0)
 }
 
 EnterInsertMode() {
-  global MOUSE_MODE
-  MOUSE_MODE := false
-
-  openOverlay("Insert")
+  closeOverlay()
   ToolTip('')
+  Suspend(1)
+  Pause(1)
 }
 
-^!n:: EnterNormalMode()
-^!i:: EnterInsertMode()
+h:: return
+j:: return
+k:: return
+l:: return
++h:: return
++j:: return
++k:: return
++l:: return
+^h:: return
+^j:: return
+^k:: return
+^l:: return
++^h:: return
++^j:: return
++^k:: return
++^l:: return
+i:: {
+  global IS_MOUSE_DOWN
+  IS_MOUSE_DOWN := false
+  MouseClick('Left')
+}
+o:: {
+  global IS_MOUSE_DOWN
+  IS_MOUSE_DOWN := false
+  MouseClick('Right')
+}
+d:: Send("{WheelDown}{WheelDown}{WheelDown}{WheelDown}{WheelDown}{WheelDown}")
+u:: Send("{WheelUp}{WheelUp}{WheelUp}{WheelUp}{WheelUp}{WheelUp}")
+v:: {
+  global IS_MOUSE_DOWN
+  if (IS_MOUSE_DOWN) {
+    Send "{LButton up}"
+    IS_MOUSE_DOWN := false
+  } else {
+    Send "{LButton down}"
+    IS_MOUSE_DOWN := true
+  }
+}
+y:: Send("^c")
 
-#HotIf (MOUSE_MODE)
-{
-  h:: return
-  j:: return
-  k:: return
-  l:: return
-  i:: MouseClick('Left')
-  o:: MouseClick('Right')
-  d:: Send "{WheelDown}"
-  u:: Send "{WheelUp}"
+openOverlay("Insert")
+Suspend(1)
+Pause(1)
+
+MouseCursor() {
+  global DEFAULT_MOUSE_SPEED
+
+  HLevel := KeyWait('h', 'D T0')
+  JLevel := KeyWait('j', 'D T0')
+  KLevel := KeyWait('k', 'D T0')
+  LLevel := KeyWait('l', 'D T0')
+
+  IS_SHIFT := KeyWait('LShift', 'D T0')
+  IS_CTRL := KeyWait('LCtrl', 'D T0')
+
+  MOUSE_SPEED := DEFAULT_MOUSE_SPEED
+
+  if (IS_SHIFT) {
+    MOUSE_SPEED := MOUSE_SPEED * 4
+  }
+
+  if (IS_CTRL) {
+    MOUSE_SPEED := MOUSE_SPEED * 4
+  }
+
+  X := 0 - HLevel
+  Y := 0 + JLevel
+  Y := Y - KLevel
+  X := X + LLevel
+
+  VELOCITY_X := X * MOUSE_SPEED
+  VELOCITY_Y := Y * MOUSE_SPEED
+
+  MouseMove(VELOCITY_X, VELOCITY_Y, 0, "R")
+
+  ToolTip('NORMAL')
 }
 
-SetTimer(MoveCursor, 16)
+SetTimer(MouseCursor, 16)

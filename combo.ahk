@@ -5,11 +5,13 @@
   Reload
 }
 
-loop {
+ObserveCombo() {
   JLevel := KeyWait('j', 'D T0.05')
   KLevel := KeyWait('k', 'D T0.05')
 
   if (JLevel && KLevel) {
-    ; Send("{Escape}")
+    Send("{Escape}")
   }
 }
+
+SetTimer(ObserveCombo, 16)
